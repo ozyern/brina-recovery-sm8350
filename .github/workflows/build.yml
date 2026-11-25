@@ -4,10 +4,9 @@ name: Build
 # device in devices/, each image zipped. A tag starting with v publishes
 # those zips as a release, each shown as the phone it is for. Run by hand,
 # it can build for one device alone.
+# Brina Recovery: run by hand only. lemonadep is packed locally on top of a
+# boot image (see README); the per-device jobs download Xiaomi stock packages.
 on:
-  push:
-    branches: ["**"]
-    tags: ["v*"]
   workflow_dispatch:
     inputs:
       device:

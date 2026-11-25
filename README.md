@@ -1,3 +1,44 @@
+# Brina Recovery (SM8350)
+
+Brina Recovery for the **OnePlus 9 / 9 Pro** (lemonade / lemonadep, Snapdragon 888),
+by [@ozyern](https://github.com/ozyern).
+
+Based on [Skyward](https://github.com/kirklin/skyward) © 2026 Kirk Lin, by way of the
+[OnePlus 8T port](https://github.com/Evo-creative/Skyward_OnePlus_8T_kebab_Unofficial)
+by Evo-creative. Licensed GPL-3.0-or-later, like Skyward.
+
+> **Beta, untested builds.** The 9 / 9 Pro have no recovery partition: Brina lives in
+> the boot image's ramdisk, next to the kernel, and the image doubles as the normal
+> boot image. Re-flashing itself after a ROM install, online updates, Wi-Fi and dual
+> boot do not work yet. adb in the recovery is root with no authorization.
+
+### Building (lemonadep)
+
+Needs Rust (`rust-toolchain.toml`), Android NDK r29, cargo-ndk, `lz4` and `magiskboot`.
+
+The base image is a footed `boot.img` with an LZ4-legacy ramdisk: the stock OxygenOS 14
+boot image with the kernel of your choice (e.g. Feather-Kernel), ramdisk recompressed
+with `magiskboot compress=lz4_legacy`.
+
+```sh
+cargo ndk -t arm64-v8a --platform 30 build --release -p skyward
+RUSTFLAGS="-C target-feature=+crt-static" cargo ndk -t arm64-v8a --platform 30 build --release -p skyward-system-init --target-dir target/system-init
+cargo build --release -p skyward-pack
+target/release/skyward-pack recovery --stock base-boot-lz4.img \
+  --binary target/aarch64-linux-android/release/skyward \
+  --system-init target/system-init/aarch64-linux-android/release/system-init \
+  --config devices/lemonadep.toml \
+  --font resources/fonts/MiSansVF.ttf \
+  --mono resources/fonts/KirkMono-Regular.ttf \
+  --mono-license resources/fonts/KirkMono-OFL.txt \
+  --partition boot --out BrinaRecovery-lemonadep.img
+```
+
+Test with `fastboot boot BrinaRecovery-lemonadep.img`, or flash it to the current
+slot's `boot` and `adb reboot recovery`. Keep your previous boot image to flash back.
+
+---
+
 # Skyward
 
 English | [简体中文](README.zh-CN.md)
