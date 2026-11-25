@@ -3,9 +3,8 @@
 Brina Recovery for the **OnePlus 9 / 9 Pro** (lemonade / lemonadep, Snapdragon 888),
 by [@ozyern](https://github.com/ozyern).
 
-Based on [Skyward](https://github.com/kirklin/skyward) © 2026 Kirk Lin, by way of the
-[OnePlus 8T port](https://github.com/Evo-creative/Skyward_OnePlus_8T_kebab_Unofficial)
-by Evo-creative. Licensed GPL-3.0-or-later, like Skyward.
+Based on [Skyward](https://github.com/kirklin/skyward) © 2026 Kirk Lin.
+Licensed GPL-3.0-or-later, like Skyward.
 
 > **Beta, untested builds.** The 9 / 9 Pro have no recovery partition: Brina lives in
 > the boot image's ramdisk, next to the kernel, and the image doubles as the normal
@@ -41,81 +40,7 @@ slot's `boot` and `adb reboot recovery`. Keep your previous boot image to flash 
 
 # Skyward
 
-English | [简体中文](README.zh-CN.md)
-
-> **AI usage:** code, review and documentation in this fork were produced with AI assistance.
-
-## Building for the OnePlus 8T (kebab)
-
-### Skyward-kebab does not support dual boot or networking!!!
-
-This fork builds Skyward for the OnePlus 8T (kebab), on the recovery the phone
-already has. What was tried and what broke is in
-[docs/kebab-port.md](docs/kebab-port.md).
-
-Against Skyward, this port adds a Keymaster 4.x HIDL client (kebab has no KeyMint
-AIDL), boot header v2, an AW8697 LED haptics backend, a DRM recovery event so a
-failed panel commit no longer panics into EDL, unmounting the data partition from
-the decrypt page, and a status-bar clock moved past the punch hole. It lacks
-Wi-Fi, Skyward's online update and dual boot.
-
-| Status | What |
-|---|---|
-| Verified on the phone | boot, 120 Hz UI, touch, backlight, vibration, `/data` decryption (users 0 and 10), decrypting `/data` again after unmounting, holding erase to clear the code at `/data` decryption, file manager, MTP, adb, screenshots, the recovery log page, time zones, the clock past the punch hole, fastbootd, slot switching, language switching, search and theme, partition pages |
-| Built, not verified | backup/restore, images, zips and payload OTAs, erase/format/factory reset, AVB, "Flash Skyward again" |
-| Not implemented | Wi-Fi (the supplicant's vendor AIDL service will not register), vibration waveforms |
-| Not possible | dual boot (no `init_boot`) |
-
-> Unverified features have reasonable code implementations and have been reviewed with AI.
-
-### Flashing
-
-Flash the released `skyward-kebab.img`. Verified boot must be off, only the
-recovery partition is written, and the bootloader stays unlocked:
-
-```sh
-adb reboot bootloader
-fastboot flash recovery skyward-kebab.img
-fastboot reboot recovery
-```
-
-### Building
-
-Needs the Rust that `rust-toolchain.toml` names with its `aarch64-linux-android`
-target, Android NDK r29, and [cargo-ndk](https://github.com/bbqsrc/cargo-ndk).
-
-Take the phone's own recovery first: boot into it (`adb reboot recovery`) and read
-the partition there, where adb is already root. From a booted system it needs root
-first (`adb root`, or `su`).
-
-```sh
-adb shell 'dd if=/dev/block/by-name/recovery_a of=/tmp/recovery.img'
-adb pull /tmp/recovery.img cache/recovery.img
-```
-
-Then build it; the result is the released `skyward-kebab.img`:
-
-```sh
-cargo ndk -t arm64-v8a --platform 30 build --release -p skyward
-RUSTFLAGS="-C target-feature=+crt-static" cargo ndk -t arm64-v8a --platform 30 build --release -p skyward-system-init --target-dir target/system-init
-cargo build --release -p skyward-pack
-target/release/skyward-pack recovery --stock cache/recovery.img \
-  --binary target/aarch64-linux-android/release/skyward \
-  --system-init target/system-init/aarch64-linux-android/release/system-init \
-  --config devices/kebab.toml \
-  --font resources/fonts/MiSans-Subset.ttf \
-  --mono resources/fonts/KirkMono-Regular.ttf \
-  --mono-license resources/fonts/KirkMono-OFL.txt \
-  --size 104857600 --out cache/skyward-kebab.img
-```
-
-The system-init program is built although kebab cannot hold a second system,
-because the packer takes it.
-
-
-![Skyward Recovery](assets/hero.jpg)
-
-Skyward is a recovery written in Rust, from scratch.
+The upstream Skyward README follows. [简体中文](README.zh-CN.md)
 
 <p align="center">
   <img src="assets/home.png" width="30%" alt="Home">

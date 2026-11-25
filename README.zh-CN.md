@@ -1,69 +1,12 @@
+# Brina Recovery (SM8350)
+
+OnePlus 9 / 9 Pro（lemonade / lemonadep）的 Brina Recovery，作者 [@ozyern](https://github.com/ozyern)。基于 [Skyward](https://github.com/kirklin/skyward) © 2026 Kirk Lin，GPL-3.0-or-later。构建与测试见 [README.md](README.md)。
+
+以下为 Skyward 上游说明。
+
 # Skyward
 
 [English](README.md) | 简体中文
-
-> **AI 使用声明：** 本分支的代码、审查和文档整理使用了 AI 辅助。
-
-## 为 OnePlus 8T（kebab）构建
-
-### Skyward-kebab不支持双系统和联网功能!!!
-
-这个分支用手机里原有的 recovery 为 OnePlus 8T（kebab）构建 Skyward。过程与踩坑见 [docs/kebab-port.md](docs/kebab-port.md)。
-
-与 Skyward 相比，这个移植多了：Keymaster 4.x HIDL 客户端（kebab 没有 KeyMint AIDL）、boot header v2、AW8697 的 LED 振动后端、注册 DRM 恢复事件（显示提交失败不再 panic 进 EDL）、解密页卸载 data 分区、状态栏时钟避开前摄开孔。少了：Wi-Fi、Skyward 在线更新、双系统。
-
-| 状态 | 功能 |
-|---|---|
-| 已证实 | 启动、120Hz UI、触摸、背光、振动、data 解密（user 0/10）、Data 卸载后重新解密、Data 解密输入长按删除清空、文件管理、MTP、adb、截图、Recovery 日志页、时区、时钟避开开孔、fastbootd、槽位切换、语言切换、搜索与主题、分区页 |
-| 未证实 | 备份/恢复、刷镜像、zip 与 payload、擦除/格式化/工厂重置、AVB、「Flash Skyward again」 |
-| 未实现 | Wi-Fi（supplicant 的 vendor AIDL 服务注册不上）、振动波形 |
-| 实现不了 | 双系统（没有 `init_boot`） |
-
-> 未证实功能都有合理的代码实现，且已使用AI检查。
-
-### 刷入
-
-刷入发布页的 `skyward-kebab.img`。先关闭验证，只写 recovery 分区，不要锁 bootloader：
-
-```sh
-adb reboot bootloader
-fastboot flash recovery skyward-kebab.img
-fastboot reboot recovery
-```
-
-### 构建
-
-需要 `rust-toolchain.toml` 指定版本的 Rust 及其 `aarch64-linux-android` 目标、Android NDK r29 和 [cargo-ndk](https://github.com/bbqsrc/cargo-ndk)。
-
-先从手机里取出原来的 recovery：进入 recovery（`adb reboot recovery`）再读分区，那里的 adb 已经是 root，不需要 `adb root`；若在正常系统里取，则要先 root（`adb root` 或 `su`）。
-
-```sh
-adb shell 'dd if=/dev/block/by-name/recovery_a of=/tmp/recovery.img'
-adb pull /tmp/recovery.img cache/recovery.img
-```
-
-然后构建（产品就是发布页的 `skyward-kebab.img`）：
-
-```sh
-cargo ndk -t arm64-v8a --platform 30 build --release -p skyward
-RUSTFLAGS="-C target-feature=+crt-static" cargo ndk -t arm64-v8a --platform 30 build --release -p skyward-system-init --target-dir target/system-init
-cargo build --release -p skyward-pack
-target/release/skyward-pack recovery --stock cache/recovery.img \
-  --binary target/aarch64-linux-android/release/skyward \
-  --system-init target/system-init/aarch64-linux-android/release/system-init \
-  --config devices/kebab.toml \
-  --font resources/fonts/MiSans-Subset.ttf \
-  --mono resources/fonts/KirkMono-Regular.ttf \
-  --mono-license resources/fonts/KirkMono-OFL.txt \
-  --size 104857600 --out cache/skyward-kebab.img
-```
-
-虽然 kebab 装不了第二系统，打包器仍需要 system-init，所以照常构建。
-
-
-![Skyward Recovery](assets/hero.jpg)
-
-Skyward 是使用 Rust 编写的 recovery，从零开始编写。
 
 <p align="center">
   <img src="assets/home.png" width="30%" alt="首页">
