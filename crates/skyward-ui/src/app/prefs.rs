@@ -146,6 +146,7 @@ mod tests {
     }
 
     #[test]
+    #[ignore = "Brina Recovery offers English alone"]
     fn the_language_chosen_is_spoken_on_every_page() {
         let (f, i) = (fonts(), info());
         let mut app = opened(Screen::Settings, &f, &i);

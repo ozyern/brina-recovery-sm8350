@@ -40,7 +40,7 @@ slot's `boot` and `adb reboot recovery`. Keep your previous boot image to flash 
 
 # Skyward
 
-The upstream Skyward README follows. [简体中文](README.zh-CN.md)
+The upstream Skyward README follows.
 
 <p align="center">
   <img src="assets/home.png" width="30%" alt="Home">

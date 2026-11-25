@@ -1325,8 +1325,11 @@ impl<'a> Pages<'a> {
         // system is built to start in, or else the one they last spoke.
         let kept = settings::read()?;
         let locale = request.locale.as_deref().or(info.locale.as_deref());
-        let named = locale.map(Lang::for_locale).transpose()?;
-        app.take_settings(kept.settings(), named);
+        let _ = locale.map(Lang::for_locale).transpose()?;
+        // Brina Recovery speaks English only, whatever the system or the
+        // settings kept from earlier starts name.
+        app.take_settings(kept.settings(), Some(Lang::En));
+        app.state.lang = Lang::En;
         // A phone whose panel does not come back from going dark keeps it
         // lit, whatever the settings kept from the starts before say.
         if !cfg.power.blank {

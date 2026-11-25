@@ -3543,9 +3543,10 @@ pub fn language(cx: &Ctx) -> Frame {
     let (t, f, l) = (cx.t, cx.f, cx.state.lang);
     let mut c = page(cx);
     let top = t.m.content_top;
-    let rows: Vec<Row> = Lang::ALL.iter().map(|&k| Row::new(k.name()).trail(Trail::Check(k == l))).collect();
+    // Brina Recovery offers English alone.
+    let rows: Vec<Row> = [Lang::En].iter().map(|&k| Row::new(k.name()).trail(Trail::Check(k == l))).collect();
     let list = widgets::list(&mut c, t, f, top, &rows);
-    let out = hits(&list.rows, &Lang::ALL.map(Action::Language));
+    let out = hits(&list.rows, &[Action::Language(Lang::En)]);
     Frame::new(t, c, out, l.pick(LANGUAGE), top)
 }
 
