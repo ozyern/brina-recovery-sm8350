@@ -143,7 +143,7 @@ fn main() -> Result<()> {
         eprintln!("axis {tag}: {min}..{max} (default {def})");
     }
 
-    let cfg = DeviceConfig::load(root.join("devices/nezha.toml"))?;
+    let cfg = DeviceConfig::load(root.join(format!("devices/{}.toml", std::env::var("PREVIEW_DEVICE").unwrap_or_else(|_| "nezha".into()))))?;
     let (w, h) = (cfg.display.width, cfg.display.height);
     let ppd = cfg.display.density as f32 / 160.0;
     let light = Theme::light(w, h, ppd);
@@ -1513,7 +1513,7 @@ fn whole_page(app: &mut App, f: &Fonts, info: &DeviceInfo) -> Canvas {
         fold.draw(&mut c, &t, &widgets::search_words(&t, f, fold.bar, fold.hint), 0.0);
     }
     if let Some(rows) = &frame.rows {
-        let cx = Ctx { t: &t, f, info, state: &state, term: None, band: None };
+        let cx = Ctx { t: &t, f, info, state: &state, term: None, log: None, band: None };
         for k in 0..rows.count() {
             let mut row = Canvas::new(c.w, (rows.edges[k + 1] - rows.edges[k]) as u32);
             pages::row(screen, &cx, k, &mut row);

@@ -1,0 +1,56 @@
+[device]
+codename = "lemonadep"
+brand = "OnePlus"
+model = "OnePlus 9 Pro"
+ab = true
+# The 9 and 9 Pro keep no recovery partition: the recovery is the boot
+# image's own ramdisk, started when the bootloader leaves out
+# androidboot.force_normal_boot. The image is padded to the boot partition.
+partition_size = 201326592
+soc = { hans = "骁龙888", hant = "驍龍888", en = "Snapdragon 888" }
+
+# The 9 Pro's 6.7-inch 1440 by 3216 LTPO panel. The OnePlus 9 shares this
+# image with its 1080 by 2400 panel: the density is taken for the width the
+# panel reports, so both lay the pages out about 411 dp wide.
+[display]
+width = 1440
+height = 3216
+density = 560
+diagonal = 6.7
+corner_radius = 32
+status_inset = 16
+
+# Touch (Oplus touchpanel: Synaptics/Samsung/Focal) and the display driver
+# are built into the kernel or loaded from vendor_boot by first stage init.
+# The AW8697 motor is a vendor module.
+[modules]
+sources = ["vendor_boot", "vendor"]
+load = ["haptic_feedback", "haptic", "aw8697"]
+
+[partitions]
+mounted = ["persist"]
+
+[haptics]
+led = "/sys/class/leds/vibrator"
+strength = { lightest = 0.4, strongest = 1.0 }
+
+[power]
+blank = false
+suspend = false
+rest = false
+
+# The modem partition holds the firmware the phone's drivers ask for, at
+# /vendor/firmware_mnt on the phone.
+[firmware]
+partition = "modem"
+
+[backup]
+efs = ["modemst1", "modemst2", "fsg", "fsc", "persist"]
+data_skipped = ["vendor/tzstorage", "vendor/qtee", "vendor/fingerprint", "vendor/optical_fingerprint"]
+
+[wipe]
+logs = [
+    "/data/vendor/ramdump",
+    "/data/vendor/ssrdump",
+    "/data/vendor/tombstones",
+]

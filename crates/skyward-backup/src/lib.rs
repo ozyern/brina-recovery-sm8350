@@ -15,7 +15,7 @@ use std::path::{Component, Path};
 pub const MANIFEST: &str = "backup.toml";
 
 /// Where backups go, from the top of the place they are kept in.
-pub const FOLDER: &str = "Skyward/backups";
+pub const FOLDER: &str = "Brina/backups";
 
 /// The layout of a backup this recovery writes and reads.
 pub const FORMAT: u32 = 1;

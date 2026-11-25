@@ -72,7 +72,7 @@ const REST: Duration = Duration::from_secs(5);
 /// Where logs saved to the temporary folder go, in the recovery service's
 /// own folder, and where in internal storage the others do.
 const TMP_LOGS: &str = "/skyward/run/logs";
-const STORAGE_LOGS: &str = "Skyward/logs";
+const STORAGE_LOGS: &str = "Brina/logs";
 
 /// The folder of internal storage the system saves its own screenshots in,
 /// which the gallery shows as its screenshots, and where in the recovery
@@ -213,7 +213,7 @@ impl Transfer {
         let device = skyward_mtp::Device {
             manufacturer: cfg.device.brand.clone(),
             model: info.model.clone(),
-            version: format!("Skyward {}", skyward_info::VERSION),
+            version: format!("Brina Recovery {}", skyward_info::VERSION),
             serial: skyward_sys::prop("ro.serialno").unwrap_or_default(),
             name: info.model.clone(),
             battery: Box::new(|| skyward_info::battery_now().ok().flatten().map(|b| b.level)),
@@ -1310,8 +1310,13 @@ impl<'a> Pages<'a> {
             | Work::SwitchSystem { .. }
             | Work::SystemStopped => start,
         };
-        let mut app = App::new(first, w, h, cfg.display.density as f32 / 160.0);
-        app.set_screen_corners(cfg.display.corner_radius as f32);
+        // One image may serve phones with panels of different widths, as the
+        // OnePlus 9 and 9 Pro: the configured density is for the configured
+        // width, and a narrower panel gets the density that keeps the pages
+        // as many dp wide.
+        let scale = if cfg.display.width > 0 && w > 0 && w != cfg.display.width { w as f32 / cfg.display.width as f32 } else { 1.0 };
+        let mut app = App::new(first, w, h, cfg.display.density as f32 * scale / 160.0);
+        app.set_screen_corners(cfg.display.corner_radius as f32 * scale);
         app.set_status_inset(cfg.display.status_inset);
         // The settings kept from the starts before are back before the first
         // frame, and before file transfer starts with its switch and the time

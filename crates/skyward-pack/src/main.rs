@@ -72,6 +72,10 @@ enum Cmd {
         /// image and the phone's bootloader wants the footer at its end.
         #[arg(long)]
         size: Option<u64>,
+        /// The partition the image is for, named in its AVB footer: boot on
+        /// phones whose recovery is the boot image's ramdisk.
+        #[arg(long, default_value = "recovery")]
+        partition: String,
         #[arg(long)]
         out: PathBuf,
     },
@@ -129,7 +133,7 @@ fn main() -> Result<()> {
             img.kernel = BootImage::read(&kernel)?.kernel;
             write(&out, &img, &img.to_bytes()?)
         }
-        Cmd::Recovery { stock, binary, system_init, config, font, mono, mono_license, size, out } => {
+        Cmd::Recovery { stock, binary, system_init, config, font, mono, mono_license, size, partition, out } => {
             let cfg = skyward_config::DeviceConfig::load(&config)?;
             let size = match size.or(cfg.device.partition_size) {
                 Some(size) => usize::try_from(size).context("partition size")?,
@@ -182,7 +186,7 @@ fn main() -> Result<()> {
             rd.replace(paths::PROP_DEFAULT, props)?;
             img.ramdisk = rd.encode()?;
             let bytes = img.to_bytes()?;
-            write(&out, &img, &avb::footed(&bytes, "recovery", size, &Sha256::digest(&bytes))?)
+            write(&out, &img, &avb::footed(&bytes, &partition, size, &Sha256::digest(&bytes))?)
         }
         Cmd::Stock { config, out } => {
             let stock = skyward_config::DeviceConfig::load(&config)?.stock.with_context(|| format!("{} names no stock build", config.display()))?;

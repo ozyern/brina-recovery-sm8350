@@ -50,7 +50,7 @@ mod wipe;
 mod wlan;
 
 #[derive(Parser)]
-#[command(name = "skyward", version, about = "Skyward recovery")]
+#[command(name = "skyward", version, about = "Brina Recovery (based on Skyward)")]
 struct Cli {
     #[command(subcommand)]
     cmd: Cmd,

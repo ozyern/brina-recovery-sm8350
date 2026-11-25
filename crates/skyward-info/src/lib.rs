@@ -15,7 +15,7 @@ use std::sync::Mutex;
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 /// This port's repository, which the parameters page names.
-pub const REPOSITORY: &str = "https://github.com/Evo-creative/Skyward_OnePlus_8T_kebab_Unofficial";
+pub const REPOSITORY: &str = "https://github.com/ozyern/Brina-Recovery";
 
 const CPU: &str = "/sys/devices/system/cpu";
 const POWER_SUPPLY: &str = "/sys/class/power_supply";

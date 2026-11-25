@@ -84,7 +84,13 @@ impl Ramdisk {
     /// with the reference `lz4` tool in legacy framing (the kernel's initramfs
     /// unpacker reads no other LZ4 framing) at its highest compression.
     pub fn encode(&self) -> Result<Vec<u8>> {
-        lz4_tool(&self.archive()?)
+        let cpio = self.archive()?;
+        // Where no `lz4` tool is installed, compress in process: the same
+        // legacy framing, at a lower compression.
+        match lz4_tool(&cpio) {
+            Ok(out) => Ok(out),
+            Err(_) => Ok(lz4_legacy(&cpio)),
+        }
     }
 
     /// Pack as a newc archive, uncompressed.

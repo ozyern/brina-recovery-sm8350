@@ -147,7 +147,7 @@ pub fn confirm_label(which: Confirm, s: &State) -> (&'static str, bool) {
 
 /// The home page's large title, and what its search bar and the search
 /// page's field say while nothing is typed.
-pub const HOME_TITLE: &str = "Skyward";
+pub const HOME_TITLE: &str = "Brina";
 pub const SEARCH_HINT: Text = ["搜索功能与分区", "搜尋功能與分割區", "Search features and partitions"];
 
 const REBOOT_TARGETS: [(Text, Option<Text>); 6] = [
@@ -174,7 +174,7 @@ const SPECS: Text = ["全部参数与信息", "全部規格與資訊", "All spec
 const LOGS: Text = ["导出日志", "匯出記錄", "Export logs"];
 const SCREEN_TIMEOUT: Text = ["息屏时间", "螢幕自動關閉", "Screen timeout"];
 const UPDATE: Text = ["系统更新", "系統更新", "System update"];
-const SKYWARD_UPDATE: Text = ["Skyward 更新", "Skyward 更新", "Skyward update"];
+const SKYWARD_UPDATE: Text = ["Brina Recovery 更新", "Brina Recovery 更新", "Brina Recovery update"];
 const FILES: Text = ["文件管理", "檔案管理", "File manager"];
 const TERMINAL: Text = ["终端", "終端機", "Terminal"];
 const LANGUAGE: Text = ["语言", "語言", "Language"];
@@ -522,7 +522,7 @@ pub fn mount(cx: &Ctx) -> Frame {
 }
 
 /// Who made the recovery, as the About page names them under its version.
-const AUTHOR: &str = "© 2026 Kirk Lin";
+const AUTHOR: &str = "by @ozyern · based on Skyward © 2026 Kirk Lin";
 
 /// About this device, modelled on the stock「我的设备」: the wordmark, the
 /// version and its author over a moving colour field, and the summary,
@@ -538,7 +538,7 @@ pub fn about(cx: &Ctx) -> Frame {
     let (out, summary_top, bottom) = about_cards(cx, &mut c);
     let canvas = fit(c, t, bottom);
     let art = HeroArt {
-        wordmark: widgets::wordmark(t, f, "Skyward", m.dp(233.7), m.dp(37.8)),
+        wordmark: widgets::wordmark(t, f, "Brina", m.dp(233.7), m.dp(37.8)),
         version: widgets::version_line(t, f, VERSION),
         author: widgets::author_line(t, f, AUTHOR),
         runs: canvas.runs(),
@@ -638,7 +638,7 @@ pub fn specs(cx: &Ctx) -> Frame {
         y = widgets::info_card(&mut c, t, f, y + gap, &[(l.pick(ANDROID_VERSION), fmt::android(l, r, i.security_patch.as_ref()))]);
     }
     y = widgets::info_card(&mut c, t, f, y + gap, &[
-        (l.pick(["Recovery 版本", "Recovery 版本", "Recovery version"]), format!("Skyward {VERSION}")),
+        (l.pick(["Recovery 版本", "Recovery 版本", "Recovery version"]), format!("Brina Recovery {VERSION}")),
         (l.pick(["Recovery 仓库", "Recovery 仓库", "Recovery repository"]), REPOSITORY.to_string()),
         (l.pick(["内核版本", "核心版本", "Kernel version"]), i.kernel.clone()),
     ]);
@@ -1004,13 +1004,13 @@ pub fn install(cx: &Ctx) -> Frame {
     let note = l.pick(["开启后，仅安装带有本机官方签名的刷机包。", "開啟後，僅安裝帶有本機官方簽章的刷機包。", "When on, only zips signed with this phone's official keys install."]);
     let mut y = widgets::footnote(&mut c, t, f, signature.bottom, note);
     if cx.state.recovery_partitions {
-        let row = Row::new(l.pick(["自动重新刷入 Skyward", "自動重新刷入 Skyward", "Flash Skyward again"])).trail(Trail::Switch(cx.state.keep_recovery));
+        let row = Row::new(l.pick(["自动重新刷入 Brina Recovery", "自動重新刷入 Brina Recovery", "Flash Brina Recovery again"])).trail(Trail::Switch(cx.state.keep_recovery));
         let options = widgets::list(&mut c, t, f, y + t.m.card_gap, &[row]);
         out.extend(hits(&options.rows, &[Action::Toggle(Switch::KeepRecovery)]));
         let note = l.pick([
-            "开启后，安装系统更新或刷机包时，会把 Skyward 重新刷入安装到的那个槽的 recovery 分区。",
-            "開啟後，安裝系統更新或刷機包時，會把 Skyward 重新刷入安裝到的那個槽的 recovery 分割區。",
-            "When on, Skyward goes back into the recovery partition of the slot the update or package installs to.",
+            "开启后，安装系统更新或刷机包时，会把 Brina Recovery 重新刷入安装到的那个槽的 recovery 分区。",
+            "開啟後，安裝系統更新或刷機包時，會把 Brina Recovery 重新刷入安裝到的那個槽的 recovery 分割區。",
+            "When on, Brina Recovery goes back into the recovery partition of the slot the update or package installs to.",
         ]);
         y = widgets::footnote(&mut c, t, f, options.bottom, note);
     }
@@ -1102,7 +1102,7 @@ fn system_stage(l: Lang, stage: Option<&Stage>) -> (String, Option<f32>) {
     }
 }
 
-const REFLASHING: Text = ["正在重新刷入 Skyward", "正在重新刷入 Skyward", "Flashing Skyward again"];
+const REFLASHING: Text = ["正在重新刷入 Brina Recovery", "正在重新刷入 Brina Recovery", "Flashing Brina Recovery again"];
 
 /// What the card says while an install script runs, and how far it is: the
 /// last line the script showed and how far it says it is, then Skyward
@@ -1126,13 +1126,13 @@ fn reflashed(c: &mut Canvas, cx: &Ctx, y: f32) -> f32 {
         Some(Reflash::Written(written)) => {
             let slots = fmt::slots(l, written);
             let said = match (l, written.len()) {
-                (Lang::En, 1) => format!("Skyward went back into {slots}'s recovery partition."),
-                _ => tr!(l, "已将 Skyward 重新刷入{slots} 的 recovery 分区。", "已將 Skyward 重新刷入{slots} 的 recovery 分割區。", "Skyward went back into the recovery partitions of {slots}."),
+                (Lang::En, 1) => format!("Brina Recovery went back into {slots}'s recovery partition."),
+                _ => tr!(l, "已将 Brina Recovery 重新刷入{slots} 的 recovery 分区。", "已將 Brina Recovery 重新刷入{slots} 的 recovery 分割區。", "Brina Recovery went back into the recovery partitions of {slots}."),
             };
             widgets::footnote(c, t, f, y, &said)
         }
         Some(Reflash::Failed(why)) => {
-            let note = l.pick(["未能将 Skyward 重新刷入 recovery 分区。", "無法將 Skyward 重新刷入 recovery 分割區。", "Couldn't flash Skyward back into the recovery partitions."]);
+            let note = l.pick(["未能将 Brina Recovery 重新刷入 recovery 分区。", "無法將 Brina Recovery 重新刷入 recovery 分割區。", "Couldn't flash Brina Recovery back into the recovery partitions."]);
             let y = widgets::footnote(c, t, f, y, note);
             widgets::footnote(c, t, f, y, why)
         }
@@ -1930,9 +1930,9 @@ pub fn backup(cx: &Ctx) -> Frame {
     ]);
     out.extend(hits(&options.rows, &[Action::Toggle(Switch::Compress), Action::Toggle(Switch::Verify)]));
     let note = l.pick([
-        "备份将保存在 Skyward/backups 文件夹中，以开始备份的时间命名。",
-        "備份將儲存在 Skyward/backups 資料夾中，以開始備份的時間命名。",
-        "Backups go in the Skyward/backups folder, named by when they began.",
+        "备份将保存在 Brina/backups 文件夹中，以开始备份的时间命名。",
+        "備份將儲存在 Brina/backups 資料夾中，以開始備份的時間命名。",
+        "Backups go in the Brina/backups folder, named by when they began.",
     ]);
     let y = widgets::footnote(&mut c, t, f, options.bottom, note);
     let (label, danger) = confirm_label(Confirm::Backup, cx.state);
@@ -1966,9 +1966,9 @@ pub fn restore(cx: &Ctx) -> Frame {
         list.bottom
     };
     let note = l.pick([
-        "将在内部存储和 U 盘中的 Skyward/backups 文件夹查找备份，查找内部存储需先完成「解密」。",
-        "將在內部儲存空間和 USB 隨身碟中的 Skyward/backups 資料夾尋找備份，尋找內部儲存空間需先完成「解密」。",
-        "Backups are looked for in the Skyward/backups folders of internal storage and the USB drive. Internal storage needs the data partition decrypted first.",
+        "将在内部存储和 U 盘中的 Brina/backups 文件夹查找备份，查找内部存储需先完成「解密」。",
+        "將在內部儲存空間和 USB 隨身碟中的 Brina/backups 資料夾尋找備份，尋找內部儲存空間需先完成「解密」。",
+        "Backups are looked for in the Brina/backups folders of internal storage and the USB drive. Internal storage needs the data partition decrypted first.",
     ]);
     let bottom = widgets::footnote(&mut c, t, f, bottom, note);
     Frame::new(t, fit(c, t, bottom), out, l.pick(["恢复", "還原", "Restore"]), top)
@@ -2173,8 +2173,8 @@ pub fn backup_job(cx: &Ctx) -> Frame {
             let (title, color, detail) = match end {
                 BackupEnd::Saved(name) => {
                     let saved = match job.place {
-                        Place::Storage => tr!(l, "已保存到内部存储的 Skyward/backups/{name}", "已儲存到內部儲存空間的 Skyward/backups/{name}", "Saved to Skyward/backups/{name} in internal storage"),
-                        Place::UsbDrive => tr!(l, "已保存到 U 盘的 Skyward/backups/{name}", "已儲存到 USB 隨身碟的 Skyward/backups/{name}", "Saved to Skyward/backups/{name} on the USB drive"),
+                        Place::Storage => tr!(l, "已保存到内部存储的 Brina/backups/{name}", "已儲存到內部儲存空間的 Brina/backups/{name}", "Saved to Brina/backups/{name} in internal storage"),
+                        Place::UsbDrive => tr!(l, "已保存到 U 盘的 Brina/backups/{name}", "已儲存到 USB 隨身碟的 Brina/backups/{name}", "Saved to Brina/backups/{name} on the USB drive"),
                     };
                     (l.pick(BACKUP_COMPLETE), GREEN, saved)
                 }
@@ -2819,9 +2819,9 @@ pub fn skyward_update(cx: &Ctx) -> Frame {
             "The new version is downloaded from GitHub and goes into the recovery partitions once its SHA-256 checks out. The system and user data are left as they are.",
         ]),
         l.pick([
-            "新版本将写入下次启动所用槽位的 recovery 分区；另一个槽位装有 Skyward 时，也会一并更新。",
-            "新版本將寫入下次啟動所用槽位的 recovery 分割區；另一個槽位裝有 Skyward 時，也會一併更新。",
-            "The new version goes into the recovery partition of the slot that starts next, and into the other slot's where it holds Skyward.",
+            "新版本将写入下次启动所用槽位的 recovery 分区；另一个槽位装有 Brina Recovery 时，也会一并更新。",
+            "新版本將寫入下次啟動所用槽位的 recovery 分割區；另一個槽位裝有 Brina Recovery 時，也會一併更新。",
+            "The new version goes into the recovery partition of the slot that starts next, and into the other slot's where it holds Brina Recovery.",
         ]),
         l.pick(["更新完成后，重启到恢复模式即可使用新版本。", "更新完成後，重新啟動到復原模式即可使用新版本。", "Once updated, reboot to recovery to use the new version."]),
     ];
@@ -2894,12 +2894,12 @@ fn skyward_online(c: &mut Canvas, cx: &Ctx, y: f32, out: &mut Vec<Hit>) -> f32 {
         Some(SkywardJob { outcome: Some(SkywardEnd::Updated(slots)), .. }) => {
             let names = fmt::slots(l, slots);
             let detail = match (l, slots.len()) {
-                (Lang::En, 1) => format!("Skyward {version} is in {names}'s recovery partition."),
+                (Lang::En, 1) => format!("Brina Recovery {version} is in {names}'s recovery partition."),
                 _ => tr!(
                     l,
-                    "已将 Skyward {version} 刷入{names} 的 recovery 分区。",
-                    "已將 Skyward {version} 刷入{names} 的 recovery 分割區。",
-                    "Skyward {version} is in the recovery partitions of {names}."
+                    "已将 Brina Recovery {version} 刷入{names} 的 recovery 分区。",
+                    "已將 Brina Recovery {version} 刷入{names} 的 recovery 分割區。",
+                    "Brina Recovery {version} is in the recovery partitions of {names}."
                 ),
             };
             let y = widgets::list(c, t, f, y + gap, &[standing(l.pick(["更新成功", "更新成功", "Updated"]), GREEN, Icon::Install, &detail)]).bottom;
@@ -2920,14 +2920,14 @@ fn skyward_online(c: &mut Canvas, cx: &Ctx, y: f32, out: &mut Vec<Hit>) -> f32 {
                     let names = fmt::slots(l, slots);
                     let warning = match (l, slots.len()) {
                         (Lang::En, 1) => format!(
-                            "{}'s recovery partition was only partly written, so rebooting to recovery may not start Skyward. Update again, and reboot once it's done.",
+                            "{}'s recovery partition was only partly written, so rebooting to recovery may not start Brina Recovery. Update again, and reboot once it's done.",
                             capitalized(l, &names)
                         ),
                         _ => tr!(
                             l,
-                            "{names} 的 recovery 分区仅写入了部分内容，重启到恢复模式可能无法进入 Skyward。请重新更新，完成后再重启。",
-                            "{names} 的 recovery 分割區僅寫入了部分內容，重新啟動到復原模式可能無法進入 Skyward。請重新更新，完成後再重新啟動。",
-                            "The recovery partitions of {names} were only partly written, so rebooting to recovery may not start Skyward. Update again, and reboot once it's done."
+                            "{names} 的 recovery 分区仅写入了部分内容，重启到恢复模式可能无法进入 Brina Recovery。请重新更新，完成后再重启。",
+                            "{names} 的 recovery 分割區僅寫入了部分內容，重新啟動到復原模式可能無法進入 Brina Recovery。請重新更新，完成後再重新啟動。",
+                            "The recovery partitions of {names} were only partly written, so rebooting to recovery may not start Brina Recovery. Update again, and reboot once it's done."
                         ),
                     };
                     y = widgets::footnote(c, t, f, y, &warning);
@@ -2962,9 +2962,9 @@ pub fn wlan(cx: &Ctx) -> Frame {
     match &w.power {
         Power::Off => {
             let note = l.pick([
-                "开启后，可连接 WLAN 下载系统更新和 Skyward 新版本。",
-                "開啟後，可連接 Wi-Fi 下載系統更新和 Skyward 新版本。",
-                "When on, system updates and new versions of Skyward can download over Wi-Fi.",
+                "开启后，可连接 WLAN 下载系统更新和 Brina Recovery 新版本。",
+                "開啟後，可連接 Wi-Fi 下載系統更新和 Brina Recovery 新版本。",
+                "When on, system updates and new versions of Brina Recovery can download over Wi-Fi.",
             ]);
             y = widgets::footnote(&mut c, t, f, y, note)
         }
@@ -3585,7 +3585,7 @@ pub fn logs(cx: &Ctx) -> Frame {
     out.extend(hits(&parts.rows, &[Action::LogPart(0), Action::LogPart(1)]));
     let y = widgets::section(&mut c, t, f, parts.bottom, l.pick(["保存到", "儲存到", "Save to"]));
     let storage = l.pick(match cx.state.data.storage_open() {
-        true => ["Skyward/logs 文件夹", "Skyward/logs 資料夾", "The Skyward/logs folder"],
+        true => ["Brina/logs 文件夹", "Brina/logs 資料夾", "The Brina/logs folder"],
         false => DECRYPT_NEEDED,
     });
     let places = widgets::list(&mut c, t, f, y, &[
@@ -3609,13 +3609,14 @@ pub fn logs(cx: &Ctx) -> Frame {
 /// Skyward's licence, in Chinese, ahead of the words the licence gives for
 /// a program's notice; English reads those words alone.
 const LICENSE_NOTICE: [&str; 2] = [
-    "Skyward 是自由软件：你可以依据自由软件基金会发布的 GNU 通用公共许可证第 3 版，或（由你选择）任何更新的版本，重新发布和修改它。\n\n\
-发布 Skyward 是希望它有用，但不附带任何担保，也不担保其适销性或适用于特定用途。详见 GNU 通用公共许可证。",
-    "Skyward 是自由軟體：你可以依據自由軟體基金會發布的 GNU 通用公眾授權條款第 3 版，或（由你選擇）任何更新的版本，重新發布和修改它。\n\n\
-發布 Skyward 是希望它有用，但不附帶任何擔保，也不擔保其適銷性或適用於特定用途。詳見 GNU 通用公眾授權條款。",
+    "Brina Recovery 是自由软件：你可以依据自由软件基金会发布的 GNU 通用公共许可证第 3 版，或（由你选择）任何更新的版本，重新发布和修改它。\n\n\
+发布 Brina Recovery 是希望它有用，但不附带任何担保，也不担保其适销性或适用于特定用途。详见 GNU 通用公共许可证。",
+    "Brina Recovery 是自由軟體：你可以依據自由軟體基金會發布的 GNU 通用公眾授權條款第 3 版，或（由你選擇）任何更新的版本，重新發布和修改它。\n\n\
+發布 Brina Recovery 是希望它有用，但不附帶任何擔保，也不擔保其適銷性或適用於特定用途。詳見 GNU 通用公眾授權條款。",
 ];
 
-const LICENSE_ORIGINAL: &str = "Skyward\nCopyright (C) 2026 Kirk Lin\n\n\
+const LICENSE_ORIGINAL: &str = "Brina Recovery\nCopyright (C) 2026 ozyern (@ozyern)\nOnePlus 9 / 9 Pro (lemonade, lemonadep) port and the Brina Recovery changes.\n\n\
+Based on Skyward\nCopyright (C) 2026 Kirk Lin\n\n\
 OnePlus 8T (kebab) port: modified in 2026 by Evo-creative.\n\
 Copyright (C) 2026 Evo-creative for the changes in this port.\n\n\
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\n\
@@ -3624,7 +3625,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 const LICENSE_TERMS: Text = ["许可证", "授權條款", "License"];
 
-/// Skyward's own licence.
+/// Brina Recovery's own licence.
 pub fn license(cx: &Ctx) -> Frame {
     let (t, f, l) = (cx.t, cx.f, cx.state.lang);
     let mut c = long_page(cx);
@@ -4121,8 +4122,8 @@ mod tests {
         assert_eq!(script_stage(l, None, &[]), ("正在运行安装脚本", None));
         assert_eq!(script_stage(Lang::En, None, &[]), ("Running the install script", None));
         assert_eq!(script_stage(l, Some(&Stage::Script { thousandths: 250 }), &said), ("- Flashing boot", Some(0.25)), "past a blank line");
-        assert_eq!(script_stage(l, Some(&Stage::Reflashing { done: 1, total: 4 }), &said), ("正在重新刷入 Skyward", Some(0.25)));
-        assert_eq!(update_stage(Lang::En, Some(&Stage::Reflashing { done: 3, total: 4 })), ("Flashing Skyward again".to_string(), Some(0.75)));
+        assert_eq!(script_stage(l, Some(&Stage::Reflashing { done: 1, total: 4 }), &said), ("正在重新刷入 Brina Recovery", Some(0.25)));
+        assert_eq!(update_stage(Lang::En, Some(&Stage::Reflashing { done: 3, total: 4 })), ("Flashing Brina Recovery again".to_string(), Some(0.75)));
         assert_eq!(update_stage(Lang::Hant, Some(&Stage::Writing { done: 1, total: 4 })).0, "第 1 步，共 3 步：寫入新系統 25%");
     }
 

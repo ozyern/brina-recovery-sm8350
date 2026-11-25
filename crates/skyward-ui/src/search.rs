@@ -78,7 +78,7 @@ pub const ENTRIES: &[Entry] = &[
     entry(["启动槽位", "啟動槽位", "Boot slot"], ["重启", "重新啟動", "Reboot"], Screen::Slot, &["qidongcaowei", "qdcw", "caowei", "cw", "slot"]),
     entry(["关于本机", "關於手機", "About phone"], SETTINGS, Screen::About, &["guanyubenji", "gybj", "about", "banben", "version"]),
     entry(
-        ["Skyward 更新", "Skyward 更新", "Skyward update"],
+        ["Brina Recovery 更新", "Brina Recovery 更新", "Brina Recovery update"],
         SETTINGS,
         Screen::SkywardUpdate,
         &["skywardgengxin", "skywardgx", "shengji", "xiazai", "update", "upgrade", "release", "github"],
@@ -187,7 +187,7 @@ mod tests {
         assert_eq!(titles("wifi"), ["WLAN"]);
         assert_eq!(find_on("wlan", Lang::Hans, |_| true).iter().map(|e| e.title[0]).collect::<Vec<_>>(), ["WLAN"]);
         assert!(find_on("wlan", Lang::Hans, |s| s != Screen::Wlan).is_empty());
-        assert_eq!(titles("xiazai"), ["系统更新", "Skyward 更新"]);
+        assert_eq!(titles("xiazai"), ["系统更新", "Brina Recovery 更新"]);
     }
 
     #[test]
@@ -200,8 +200,8 @@ mod tests {
 
     #[test]
     fn skyward_is_updated_from_its_own_page() {
-        assert_eq!(titles("skyward"), ["Skyward 更新"]);
-        assert_eq!(titles("gengxin"), ["系统更新", "Skyward 更新"]);
+        assert_eq!(titles("skyward"), ["Brina Recovery 更新"]);
+        assert_eq!(titles("gengxin"), ["系统更新", "Brina Recovery 更新"]);
         assert!(find_on("skyward", Lang::Hans, |s| s != Screen::SkywardUpdate).is_empty());
     }
 
